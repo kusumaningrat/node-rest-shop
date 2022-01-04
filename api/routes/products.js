@@ -60,23 +60,23 @@ router.get('/:id', async(req, res) => {
 
 })
 // Create a new Product
-router.post('/', 
-    body('nama').custom(async(value) => {
-        const existProduct = await Product.findOne({name: value})
-        if(existProduct){
-            throw new Error('Product has already exist')
-        }
-        return true;
-    }),async(req, res) => {
+router.post('/', async(req, res) => {
     const product = new Product({
         _id: new mongoose.Types.ObjectId,
         name: req.body.name,
         price: req.body.price
+    });
+
+    const getName = await Product.findOne({name: req.body.name});
+
+    if(getName){
+        res.status(500).json({
+            message: 'Product has already exsist',
+            request: {
+                type: 'POST',
+                url: 'http://localhost:3000/products/'
+            }
         })
-    const errors = validationResult(req);
-        
-    if(!errors.isEmpty()){
-        return res.status(404).json({errors: errors.array() })
     }else{
         const saveProduct = await product.save().then((result) => {
             console.log(result);
@@ -97,9 +97,45 @@ router.post('/',
             res.status(500).json({
                 error: err
             })
-        });
+        }); 
     }
+
 })
+// router.post('/', async(req, res) => {
+
+//     const product = new Product({
+//         _id: new mongoose.Types.ObjectId,
+//         name: req.body.name,
+//         price: req.body.price
+//         })
+
+//     const errors = validationResult(req);
+        
+//     if(!errors.isEmpty()){
+//         return res.status(404).json({errors: errors.array() })
+//     }else{
+//         const saveProduct = await product.save().then((result) => {
+//             console.log(result);
+//             res.status(200).json({
+//                 message: 'Product created successfully',
+//                 createdProduct: {
+//                     name: result.name,
+//                     price: result.price,
+//                     _id: result._id,
+//                     request: {
+//                         type: 'GET',
+//                         url: 'http://localhost:3000/products/' + result._id
+//                     }
+//                 }
+//             })
+//         }).catch((err) => {
+//             console.log(err);
+//             res.status(500).json({
+//                 error: err
+//             })
+//         });
+//     }
+// })
 
 // Delete product
 router.delete('/:id', async(req, res) => {
