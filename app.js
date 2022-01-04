@@ -3,9 +3,12 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const productRoutes = require('./api/routes/products');
+
 require('dotenv/config');
 
+
+const productRoutes = require('./api/routes/products');
+const orderRoutes = require('./api/routes/orders')
 
 // Connect to Database
 mongoose.connect(process.env.DB_URL, {
@@ -29,6 +32,7 @@ app.use(bodyParser.json());
 
 // Create a Routes to handling request
 app.use('/products', productRoutes)
+app.use('/orders', orderRoutes)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`)

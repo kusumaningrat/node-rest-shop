@@ -54,9 +54,10 @@ router.get('/:id', async(req, res) => {
             })  
         }
     }).catch((err) => {
-        
+        res.status(500).json({
+            error: err
+        })
     });
-
 
 })
 // Create a new Product
@@ -80,7 +81,7 @@ router.post('/', async(req, res) => {
     }else{
         const saveProduct = await product.save().then((result) => {
             console.log(result);
-            res.status(200).json({
+            res.status(201).json({
                 message: 'Product created successfully',
                 createdProduct: {
                     name: result.name,
