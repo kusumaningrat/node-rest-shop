@@ -45,7 +45,7 @@ router.get('/:id', async(req, res) => {
                 product: doc,
                 request: {
                     type: "GET",
-                    url: 'http://localhost/products'
+                    url: 'http://localhost:3000/products'
                 } 
             });
         }else{
@@ -136,6 +136,35 @@ router.post('/', async(req, res) => {
 //         });
 //     }
 // })
+
+router.put('/:productId', async(req, res) => {
+    
+    const id = req.params.productId;
+
+    updateOps = {}
+    
+    for (const ops of req.body){
+        updateOps[ops.newName] =  ops.value;
+    }
+    const updateProduct = await Product.update({_id: id}, { $set: updateOps })
+        .exec()
+        .then((result) => {
+            console.log(result);
+            res.status(200).json({
+                message: 'Product Updated',
+                request: {
+                    type: "GET",
+                    url: 'http://localhost:3000/products/' + id
+                }
+            })   
+        }).catch((err) => {
+            console.log(err)
+            res.status(500).json({
+                error: err
+            })
+        });
+    
+})
 
 // Delete product
 router.delete('/:id', async(req, res) => {
