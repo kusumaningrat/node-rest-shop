@@ -135,7 +135,7 @@ def print_duration_solution(manager, duration_routing, distance_routing, solutio
 
 def main():
     """Entry point of the program."""
-    addresses = receive_input()
+    addresses, labels = receive_input()
 
     # Create the data.
     data = create_data(addresses)
